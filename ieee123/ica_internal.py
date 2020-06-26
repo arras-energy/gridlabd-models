@@ -1,116 +1,142 @@
-
-'''
-There are 3 ways to set thresholds.
-1) Read the user-inputted value from the config.csv
-    a. Into main .py function using csv converter -OR-
-    b. Directly into this .py file (can tailor csv more, but inaccessible outside)
-2) Read a default values from the config.csv
-
-Load default values first. Load modifies (if necessary). Just different csv files. This is an overwrite, not delete.
-first do input defaults, then input user settings.
-3) Read in defaults based on library properties
-
-These will be TWO choices in the config.csv
-'''
-
-
-
-'''
-ON_INIT
-1) Based on user-selected option, defines thresholds for each parameter.
-2) Creates a general dictionary of properties to check for each class and their thresholds.
-3) Populates a global master dictionary with each object, properties to check, and their thresholds.
-'''
 import pandas as pd
+import re
+
+#In master_dict, key = obj, val = obj_dict
+master_dict = {}
+global recorder
 
 def on_init(t):
-    print("initializing")
-    #If Option 1, global thresholds will have already been set through csv converter
-    #TODO: Add 'ica_' tag to all globals. Option on converter to set a prefix.
-  
-    #If Option 2, read config file directly into this .py script. Create a global for each entry.
-    # config_globals = pd.read_csv("config/ica_config.csv")
-    # for index in range(len(config_globals)):
-    #     gridlabd.set_global("ica_" + config_globals.iloc[index, 0], str(config_globals.iloc[index, 1]))
-  
-    # #Create a dict of all ICA globals with info on how to find library values
-    # #RATING: set the threshold as a % of the max rating. DEVIATION: set the threshold as a +-% from the nominal rating.
-    # ica_globals_dict = {'ica_underground_line':{'configuration':1, 'rating_summer_continuous':'rating','rating_winter_continuous':'rating'},\
-    #                 'ica_overhead_line':{'configuration':1, 'rating_summer_continuous':'rating', 'rating_winter_continuous':'rating'},\
-    #                 'ica_transformer':{'configuration':1, 'power_rating':'rating', 'powerA_rating':'rating', 'powerB_rating':'rating', 'powerC_rating':'rating', 'primary_voltage':'deviation', 'secondary_voltage':'deviation'},\
-    #                 'ica_regulator':{'configuration':1, 'primary_voltage':'none', 'secondary_voltage':'none'},\
-    #                 'ica_substation':{'configuration':0, 'nominal_voltage':'deviation'},\
-    #                 'ica_triplex_meter':{'configuration':0, 'nominal_voltage':'deviation'},\
-    #                 'ica_meter':{'configuration':0, 'nominal_voltage':'deviation'}}
-   
+    '''
+    Based on user-selected options, thresholds are set for each relevant property of each object.
+    A master dictionary is created with all objects, properties to check, and their thresholds.
 
-    # global_list = gridlabd.get("globals")
-   
-  
-    # for g in global_list:
-    #     #Only consider globals specific to ICA tests
-    #     if 'ica_' in g: #TODO: restrict ica_ to the front of the string
-    #         val = gridlabd.get_global(g)
-    #         #TODO: Check that value makes sense
-    #         #Only consider globals where user has input a %
-    #         if '%' in val: #TODO: restrict to end of string
-    #             #QUESTION: Can you call a property gridlabd.get_value(transformer, power_in.real)? Would need to parse it into something py recognizes. Might be code for this.
-    #             global_string = g.split('.', maxsplit=1)
-    #             obj = global_string[0]
-    #             prop = global_string[1]
+    There are 2 options for how to read in a csv on initialization:
+    1) Global thresholds are set through csv converter.
+    2) Read config file directly into script, creating a global for each entry.
+    
+    Option 1 is currently default, Option 2 is commented out. 
+    '''  
+    
+    #Option 2
+#    config_globals = pd.read_csv("ica_config_file.csv")
+#    for index in range(len(config_globals)):
+#        gridlabd.set_global("ica_" + config_globals.iloc[index, 0], str(config_globals.iloc[index, 1]))
 
-    #             percent = gridlabd.get_global(g).strip('%')/100    
-    #             obj_dict = ica_globals_dict.get(obj)
-    #             #TODO: Make sure obj names all either do or do not have ica_
-               
-    #             #First, get the library value of the given property.
-    #             if obj_dict.get('configuration') == 0:
-    #                 #QUESTION: More efficient way than str->float->str?
-    #                 lib_prop = float(gridlabd.get_value(obj, prop))
-                   
-    #             else:
-    #                 config = gridlabd.get_value(obj, 'configuration')
-    #                 lib_prop = float(gridlabd.get_value(config, prop))
+    #Create a dict of classes to check on_commit. Key = class. Value = information on how to find library properties of class.
+        #RATING: set the threshold as a % of the max rating. DEVIATION: set the threshold as a +-% from the nominal rating.
+    ica_class_dict = {'underground_line':{'configuration':1, 'rating.summer.continuous':'rating','rating.winter.continuous':'rating'},\
+                         'overhead_line':{'configuration':1, 'rating.summer.continuous':'rating', 'rating.winter.continuous':'rating'},\
+                         'transformer':{'configuration':1, 'power_rating':'rating', 'powerA_rating':'rating', 'powerB_rating':'rating', 'powerC_rating':'rating', 'primary_voltage':'deviation', 'secondary_voltage':'deviation'},\
+                         'regulator':{'configuration':1, 'raise_taps':'limit', 'lower_taps':'limit'},\
+                         'substation':{'configuration':0, 'nominal_voltage':'deviation'},\
+                         'triplex_meter':{'configuration':0, 'nominal_voltage':'deviation'},\
+                         'meter':{'configuration':0, 'nominal_voltage':'deviation'}}
+    
+    object_list = gridlabd.get("objects")
+    
+    #In obj_dict, key = property & val = threshold. One for each object.
+    obj_dict = {}
+    
+    for obj in object_list:
+        obj_dict.clear()
+        #Get the class of the object
+        obj_class = gridlabd.get_object(obj).get('class')
+        
+        if obj_class in ica_class_dict:
+            class_dict = ica_class_dict.get(obj_class)
+            #TODO: Make sure obj names all either do or do not have ica_
+            #Make a list of properties to check for that class
+            prop_list = list(class_dict.keys())
+            del prop_list[0]
 
-    #             #Then, modify the threshold to be a % or a +- range of that property.
-    #             if obj_dict.get(prop) == 'rating':
-    #                 gridlabd.set_global(obj, str(lib_prop*percent))
-                   
-    #             elif obj_dict.get(prop) == 'deviation':
-    #                 gridlabd.set_global(obj+'max', str(lib_prop*(1.0+percent)))
-    #                 gridlabd.set_global(obj+'min', str(lib_prop*(1.0-percent)))
-                   
-    #             else:
-    #                 print('%s should not have a percentage as a threshold.' % obj)
+            #Iterate through those properties, appending to obj_dict
+            for prop in prop_list:
+                #First, get the library value of the given property.
+                if class_dict.get('configuration') == 0:
+                    lib_val = gridlabd.get_value(obj, prop)
+                else:
+                    config = gridlabd.get_value(obj, 'configuration')
+                    lib_val = gridlabd.get_value(config, prop)
+                
+                non_decimal = re.compile(r'[^\d.]+')
+                lib_val = float(non_decimal.sub('',lib_val))
+                #Check if the user input a percentage
+                thresh = gridlabd.get_global(obj_class + '.' + prop)
 
+                #If so, set the threshold to be a % or a +- range of that property
+                if '%' in thresh:
+                    thresh = float(thresh.strip('%'))/100  
+                    if class_dict.get(prop) == 'rating':
+                        obj_dict[prop] = lib_val * thresh
+                      
+                    elif class_dict.get(prop) == 'deviation':
+                        obj_dict[prop + '_max'] = lib_val * (1.0 + thresh)
+                        obj_dict[prop + '_min'] = lib_val * (1.0 - thresh)
+                                        
+                    else:
+                        gridlabd.warning('%s, class %s should not have a percentage as a threshold.' % (obj,obj_class))
+                
+                #If the user input a boolean, set the threshold to the library value
+                elif class_dict.get(prop) == 'limit':
+                        obj_dict[prop] = lib_val
 
-           
-    # #Get a list of all objects used in model               
-    # objects = gridlabd.get("objects")
-    # #obj_dict will contain all properties/threshold to check for an object 
-    # obj_dict = {}
-    # #master_dict will contain all objects as keys, with associated obj_dicts as values
-    # master_dict = {}
- 
-    # for obj in objects:
-    #     obj_dict.clear()
-    #     obj_class = gridlabd.get_object(obj)['class']
-    #     #Create a list of globals (obj_global_list) that contain this class name
-    #     #For each global, append a key:value (property:threshold) within that obj's dict
-    #     for g in obj_global_list:
-    #         obj_dict.update({'property':'threshold'})
-          
-    #     master_dict.update({obj:obj_dict})
+                #If the user didn't input a % or a boolean, set the threshold to the user input
+                else:
+                    obj_dict[prop] = thresh
+                    
+            master_dict[obj] = obj_dict.copy()
+            
+    gridlabd.warning(str(master_dict))
+    recorder = open("results.csv","w")
+    recorder.write("time, object, property, value")
+        
 
     return True
       
 
 '''
 ON_COMMIT
-For each key in global dictionary, get the value for each property and compare it to the threshold.
+For each key in master dictionary, get the value for each property and compare it to the threshold.
 If threshold is exceeded, record the object, property, and value, and exit.
 '''
 
 def on_commit(t):
+    '''
+    Note: This code is not complete! Needs to be restructured to reflect changes to on_init.
+    This script should get current values for each property of interest for each object, and
+    compare it to the thresholds created in on_init. 
+    
+    If threshold is exceeded, record the object, property, and value, and exit.
+    
+    '''
+    
+#    for obj in master_dict:
+#        obj_dict = master_dict.get(obj)
+#        for prop in obj_dict:
+#            
+#            #Get the current value for the given property
+#            prop_check = prop.replace('_min','')
+#            prop_check = prop_check.replace('_max','')
+#            val = gridlabd.get_value(obj, prop_check)
+#
+#            #Convert the string to a float
+#            non_decimal = re.compile(r'[^\d.]+')
+#            val = float(non_decimal.sub('',val))
+#            
+##            gridlabd.warning(obj)
+##            gridlabd.warning(prop_check)
+##            gridlabd.warning(str(val))
+#            
+#
+#            if '_min' in prop and val < obj_dict.get(prop):
+#                pass
+#                    #Record the time, object, property, and value.
+#                #TODO: Check the keys in this dictionary - code below is placeholder
+##                obj_props = gridlabd.get_object(obj)
+##                recorder.write('%s,%s,%s\n' % (obj_props['time'],obj_props['name'],obj_props['property'],obj_props['value']))
+#            if '_min' not in prop and val > obj_dict.get(prop):
+#                pass
+#            
+#            
     return True
 
