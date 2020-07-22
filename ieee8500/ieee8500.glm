@@ -33,12 +33,5 @@ module tape;
 #include "library/feeder.glm"
 #include "library/triplex_nodes.glm"
 
-object climate {
-     name "weather";
-     tmyfile "data/CA-Bakersfield_Meadows_Field_HighWind.tmy3";
-     interpolate QUADRATIC;
-}
-
-
 #include "library/nodes.glm"
 #include "library/lines.glm"
