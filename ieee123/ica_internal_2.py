@@ -1,10 +1,15 @@
 
 import pandas as pd
 import re
-import gridlabd
+
 
 #In master_dict, key = obj, val = obj_dict
 master_dict = {}   # master_dict = {obj_0: val_0, obj_1: val_1, ....... obj_n: val_n}
+
+
+                               
+
+
 
 def on_init(t):
     '''
@@ -25,28 +30,32 @@ def on_init(t):
 
     #Create a dict of classes to check on_commit. Key = class. Value = information on how to find library properties of class.
         #RATING: set the threshold as a % of the max rating. DEVIATION: set the threshold as a +-% from the nominal rating.
-    ica_class_dict = {'underground_line':{'configuration':1,
-                                          'rating.summer.continuous':'rating',
-                                          'rating.winter.continuous':'rating'},
-                         'overhead_line':{'configuration':1,
-                                          'rating.summer.continuous':'rating',
-                                          'rating.winter.continuous':'rating'},
-                         'transformer':{'configuration':1,
-                                        'power_rating':'rating',
-                                        'powerA_rating':'rating',
-                                        'powerB_rating':'rating',
-                                        'powerC_rating':'rating',
-                                        'primary_voltage':'deviation',
-                                        'secondary_voltage':'deviation'},
-                         'regulator':{'configuration':1,
-                                      'raise_taps':'limit',
-                                      'lower_taps':'limit'},
-                         'substation':{'configuration':0,
-                                       'nominal_voltage':'deviation'},
-                         'triplex_meter':{'configuration':0,
-                                          'nominal_voltage':'deviation'},
-                         'meter':{'configuration':0,
-                                  'nominal_voltage':'deviation'}}
+    def icaDictionary():
+        ica_class_dict = {'underground_line':{'configuration':1,
+                                              'rating.summer.continuous':'rating',        
+                                              'rating.winter.continuous':'rating'},       
+                             'overhead_line':{'configuration':1,
+                                              'rating.summer.continuous':'rating',
+                                              'rating.winter.continuous':'rating'},
+                             'transformer':{'configuration':1,
+                                            'power_rating':'rating',
+                                            'powerA_rating':'rating',
+                                            'powerB_rating':'rating',
+                                            'powerC_rating':'rating',
+                                            'primary_voltage':'deviation',
+                                            'secondary_voltage':'deviation'},
+                             'regulator':{'configuration':1,
+                                          'raise_taps':'limit',
+                                          'lower_taps':'limit'},
+                             'substation':{'configuration':0,
+                                           'nominal_voltage':'deviation'},
+                             'triplex_meter':{'configuration':0,
+                                              'nominal_voltage':'deviation'},
+                             'meter':{'configuration':0,
+                                      'nominal_voltage':'deviation'}}
+        return ica_class_dict
+
+    ica_class_dict
     
     object_list = gridlabd.get("objects")   # results given after running ieee123.glm, from this we withdraw the objects or results and store them in the variable name
                                             # Only works after initialization has started
@@ -139,70 +148,42 @@ If threshold is exceeded, record the object, property, and value, and exit.
 '''
 
 def on_commit(t):
-
-    # 1. Threshold value -> master ica_dictionary (set by user)
-    # 2. Simulation result -> object in GridLAB-D-> dictionary
-    # 3.
-
     '''
     Note: This code is not complete! Needs to be restructured to reflect changes to on_init.
     This script should get current values for each property of interest for each object, and
     compare it to the thresholds created in on_init. 
     
     If threshold is exceeded, record the object, property, and value, and exit.
-
-
-
-    '''
-    '''
-    
-     for node in nodes:
-        set the current value to the maximum with no violation 
-        set the voltage value to the maximum with no violation
-            
-            Simplified: 
-                Load setting (Voltage and current)
-                at this node reduce this specific load
-                
-                gridlabd.set(inverter)['voltaje'] = 2000
-        
-        and runs the power flow simulation for the next node to be analyzed
-     
-        ICA a current and voltage value 
     
     '''
-    print('Commit model start')
+    
     for obj in master_dict:
         obj_dict = master_dict.get(obj)
         for prop in obj_dict:
         #Get the current value for the given property
-            print(prop) #This is a strg
-            # prop_check = prop.replace('_min','') Commented out new variable defined prop_check
-            prop.replace('_min', '')
-            #print(prop)
-            #possible if statement missing CHECK
-            #prop_check = prop_check.replace('_max','')  #Commented out associated with prop_check
-            #val = gridlabd.get_value(obj, prop_check)  #Commented out associated with prop_check
+            prop_check = prop.replace('_min','')
+            prop_check = prop_check.replace('_max','')
+            val = gridlabd.get_value(obj, prop_check)
 
             #Convert the string to a float
-            #non_decimal = re.compile(r'[^\d.]+')    #Commented out to avoid fatal error in run
-            #val = float(non_decimal.sub('',val))
-
+            non_decimal = re.compile(r'[^\d.]+')
+            val = float(non_decimal.sub('',val))
+           
 #            gridlabd.warning(obj)
 #            gridlabd.warning(prop_check)
 #            gridlabd.warning(str(val))
+           
 
-#   Comented out fatal error in run
-#             if '_min' in prop and val < obj_dict.get(prop):
-#                 pass
-#                    #Record the time, object, property, and value.
-#                #TODO: Check the keys in this dictionary - code below is placeholder
-# #                obj_props = gridlabd.get_object(obj)
-# #                recorder.write('%s,%s,%s\n' % (obj_props['time'],obj_props['name'],obj_props['property'],obj_props['value']))
-#             #if 'n_min' not in prop and val > obj_dict.get(prop):  #typo in the line
-#             if '_min' not in prop and val > obj_dict.get(prop):
-#                 pass
-
-        # Run the model until al the power injection sequences are completed
-        # Run the model until the previous ica value is the same as the last calculated
+            if '_min' in prop and val < obj_dict.get(prop):
+                pass
+                   #Record the time, object, property, and value.
+               #TODO: Check the keys in this dictionary - code below is placeholder
+#                obj_props = gridlabd.get_object(obj)
+#                recorder.write('%s,%s,%s\n' % (obj_props['time'],obj_props['name'],obj_props['property'],obj_props['value']))
+            if 'n_min' not in prop and val > obj_dict.get(prop):
+                pass
+           
+           
     return True
+forcing on_init() function to run using python3 in terminal instead of gridlabd
+on_init(time())
