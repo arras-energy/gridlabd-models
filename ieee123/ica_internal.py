@@ -2,9 +2,34 @@
 import pandas as pd
 import re
 import gridlabd
+from pprint import pprint
 
 #In master_dict, key = obj, val = obj_dict
 master_dict = {}   # master_dict = {obj_0: val_0, obj_1: val_1, ....... obj_n: val_n}
+
+ica_class_dict = {'underground_line': {'configuration': 1,
+                                       'rating.summer.continuous': 'rating',
+                                       'rating.winter.continuous': 'rating'},
+                  'overhead_line': {'configuration': 1,
+                                    'rating.summer.continuous': 'rating',
+                                    'rating.winter.continuous': 'rating'},
+                  'transformer': {'configuration': 1,
+                                  'power_rating': 'rating',
+                                  'powerA_rating': 'rating',
+                                  'powerB_rating': 'rating',
+                                  'powerC_rating': 'rating',
+                                  'primary_voltage': 'deviation',
+                                  'secondary_voltage': 'deviation'},
+                  'regulator': {'configuration': 1,
+                                'raise_taps': 'limit',
+                                'lower_taps': 'limit'},
+                  'substation': {'configuration': 0,
+                                 'nominal_voltage': 'deviation'},
+                  'triplex_meter': {'configuration': 0,
+                                    'nominal_voltage': 'deviation'},
+                  'meter': {'configuration': 0,
+                            'nominal_voltage': 'deviation'}}
+
 
 def on_init(t):
     '''
@@ -25,28 +50,28 @@ def on_init(t):
 
     #Create a dict of classes to check on_commit. Key = class. Value = information on how to find library properties of class.
         #RATING: set the threshold as a % of the max rating. DEVIATION: set the threshold as a +-% from the nominal rating.
-    ica_class_dict = {'underground_line':{'configuration':1,
-                                          'rating.summer.continuous':'rating',
-                                          'rating.winter.continuous':'rating'},
-                         'overhead_line':{'configuration':1,
-                                          'rating.summer.continuous':'rating',
-                                          'rating.winter.continuous':'rating'},
-                         'transformer':{'configuration':1,
-                                        'power_rating':'rating',
-                                        'powerA_rating':'rating',
-                                        'powerB_rating':'rating',
-                                        'powerC_rating':'rating',
-                                        'primary_voltage':'deviation',
-                                        'secondary_voltage':'deviation'},
-                         'regulator':{'configuration':1,
-                                      'raise_taps':'limit',
-                                      'lower_taps':'limit'},
-                         'substation':{'configuration':0,
-                                       'nominal_voltage':'deviation'},
-                         'triplex_meter':{'configuration':0,
-                                          'nominal_voltage':'deviation'},
-                         'meter':{'configuration':0,
-                                  'nominal_voltage':'deviation'}}
+    # ica_class_dict = {'underground_line':{'configuration':1,
+    #                                       'rating.summer.continuous':'rating',
+    #                                       'rating.winter.continuous':'rating'},
+    #                      'overhead_line':{'configuration':1,
+    #                                       'rating.summer.continuous':'rating',
+    #                                       'rating.winter.continuous':'rating'},
+    #                      'transformer':{'configuration':1,
+    #                                     'power_rating':'rating',
+    #                                     'powerA_rating':'rating',
+    #                                     'powerB_rating':'rating',
+    #                                     'powerC_rating':'rating',
+    #                                     'primary_voltage':'deviation',
+    #                                     'secondary_voltage':'deviation'},
+    #                      'regulator':{'configuration':1,
+    #                                   'raise_taps':'limit',
+    #                                   'lower_taps':'limit'},
+    #                      'substation':{'configuration':0,
+    #                                    'nominal_voltage':'deviation'},
+    #                      'triplex_meter':{'configuration':0,
+    #                                       'nominal_voltage':'deviation'},
+    #                      'meter':{'configuration':0,
+    #                               'nominal_voltage':'deviation'}}
     
     object_list = gridlabd.get("objects")   # results given after running ieee123.glm, from this we withdraw the objects or results and store them in the variable name
                                             # Only works after initialization has started
@@ -61,11 +86,10 @@ def on_init(t):
     for obj in object_list:                                                                                               
         obj_dict.clear()                                                                        
         #Get the class of the object
-        obj_class = gridlabd.get_object(obj).get('class')                     # obj_class = could be a meter, node, transformer (defined in ieee123.glm)
+        obj_class = gridlabd.get_object(obj).get('class')                     # obj_class = could be a meter, node, transformer (defined in ieee123.glm
         print(obj,obj_class)                                                  # obj_class = classType('meter')
-                                                                             
-        
-        if obj_class in ica_class_dict:                                       
+
+        if obj_class in ica_class_dict:
             class_dict = ica_class_dict.get(obj_class)                        
             #TODO: Make sure obj names all either do or do not have ica_      
             #Make a list of properties to check for that class
@@ -120,14 +144,14 @@ def on_init(t):
 
                   
             master_dict[obj] = obj_dict.copy() # ---> master_dict = {obj: obj_dict.copy()} ---> 
-            print(master_dict)
+            # pprint(master_dict)
 
     info_test = open("master_dictionary.csv","w") # Dump to a file checking purposes 
     info_test.write(str(master_dict))
-    gridlabd.warning(str(master_dict)) 
+    #gridlabd.warning(str(master_dict))
     recorder = open("results.csv","w")
     recorder.write("time, object, property, value")
-        
+
 
     return True
       
@@ -164,19 +188,24 @@ def on_commit(t):
                 Load setting (Voltage and current)
                 at this node reduce this specific load
                 
-                gridlabd.set(inverter)['voltaje'] = 2000
+                gridlabd.set(inverter)['voltage'] = 2000
         
         and runs the power flow simulation for the next node to be analyzed
      
         ICA a current and voltage value 
     
     '''
+    print(t)
     print('Commit model start')
+    # pprint(master_dict.keys())
+    # pprint(ica_class_dict.keys())
     for obj in master_dict:
+        #if master_dict.get(obj).get('class') in ica_class_dict.keys():
+        print(obj, master_dict[obj])
         obj_dict = master_dict.get(obj)
         for prop in obj_dict:
         #Get the current value for the given property
-            print(prop) #This is a strg
+            # print(prop) #This is a strg
             # prop_check = prop.replace('_min','') Commented out new variable defined prop_check
             prop.replace('_min', '')
             #print(prop)
@@ -192,7 +221,7 @@ def on_commit(t):
 #            gridlabd.warning(prop_check)
 #            gridlabd.warning(str(val))
 
-#   Comented out fatal error in run
+#   Commented out fatal error in run
 #             if '_min' in prop and val < obj_dict.get(prop):
 #                 pass
 #                    #Record the time, object, property, and value.
@@ -205,4 +234,5 @@ def on_commit(t):
 
         # Run the model until al the power injection sequences are completed
         # Run the model until the previous ica value is the same as the last calculated
-    return True
+
+    return gridlabd.NEVER
