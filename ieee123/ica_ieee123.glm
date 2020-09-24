@@ -79,7 +79,7 @@ clock {
 #else
 #error TIMEZONE is not specified in ${CONFIGFILE}
 #endif // TIMEZONE
-module ica_internal_2;
+module ica_internal_init;
 
 ///////////////////////////////////////////////////////
 //

@@ -10,6 +10,7 @@ Created on Tue Sep 22 12:17:43 2020
 import pandas as pd
 import re
 import gridlabd
+import pdb
 
 
 viol_df = pd.DataFrame(columns = ['Object','Class','Init Prop','Min Thresh','Max Thresh','Commit Prop','Value','Violation?','Time'])
@@ -18,8 +19,8 @@ viol_df = pd.DataFrame(columns = ['Object','Class','Init Prop','Min Thresh','Max
 def on_init(t):
     '''
     Based on user-selected options, thresholds are set for each relevant 
-    property of each object. A master dictionary is created with all objects, 
-    properties to check, and their thresholds.
+    property of each object. The violation data frame is populated with 
+    properties to check with each commit, and their thesholds. 
     '''  
     
     ###########################################################################
@@ -47,7 +48,6 @@ def on_init(t):
     # In thresh_dict, key = class, val = dictionary w/ info to set thresh
     #   rating: set the threshold as a % of the max rating
     #   deviation: set the threshold as a +-% from the nominal rating.
-
     #Todo: add commit props as list for init props
     thresh_dict = {'underground_line':{'configuration':1,
                                           'rating.summer.continuous':['rating','current_out_A','current_out_B','current_out_C','current_in_A','current_in_B','current_in_C'],
@@ -90,8 +90,7 @@ def on_init(t):
             #TODO: Make sure obj names all either do or do not have ica_      
             
             # Make a list of properties to check for that class            
-            init_prop_list = list(thresh_class_dict.keys())                               
-            del init_prop_list[0]                                                                             
+            init_prop_list = list(thresh_class_dict.keys())[1:]   
                                                                                      
             # Iterate through those properties, appending to viol_df
             for init_prop in init_prop_list:
@@ -135,13 +134,13 @@ def on_init(t):
                     thresh_max = user_input
                     
                 # Identify the commit properties associated with the obj's init properties
-                commit_prop_list = thresh_class_dict.get(init_prop)
-                del commit_prop_list[0]
+                commit_prop_list = thresh_class_dict.get(init_prop)[1:]
                 
                 # Append one row to the viol_df for each commit property for each obj                
                 for commit_prop in commit_prop_list:                                                                        
-                    viol_df = viol_df.append({'Object':str(obj),'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop)})                                                                                               
-                    
+                    viol_df = viol_df.append({'Object':str(obj),'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop)}, ignore_index=True)                                                                                               
+                print('finished loop')
+                print(viol_df)    
     return True
       
 
