@@ -13,10 +13,11 @@ import gridlabd
 import pdb
 
 
-viol_df = pd.DataFrame(columns = ['Object','Class','Init Prop','Min Thresh','Max Thresh','Commit Prop','Value','Violation?','Time'])
+# viol_df = pd.DataFrame(columns = ['Object','Class','Init Prop','Min Thresh','Max Thresh','Commit Prop','Value','Violation?','Time'])
 
 
 def on_init(t):
+    print('init')
     '''
     Based on user-selected options, thresholds are set for each relevant 
     property of each object. The violation data frame is populated with 
@@ -78,6 +79,7 @@ def on_init(t):
     ###########################################################################
 
     global viol_df
+    df_dict = {}
     object_list = gridlabd.get("objects")
                                           
     for obj in object_list:
@@ -126,7 +128,8 @@ def on_init(t):
                 
                 #TODO: I don't remember meaning of raise/lower taps being a limit
                 # If the user input a boolean, set the threshold to the library value
-                elif thresh_class_dict.get(init_prop)[0] == 'limit':
+                #elif thresh_class_dict.get(init_prop)[0] == 'limit':
+                elif user_input == '':
                     thresh_max = lib_val
 
                 # If the user didn't input a % or a boolean, set the threshold to the user input
@@ -137,10 +140,14 @@ def on_init(t):
                 commit_prop_list = thresh_class_dict.get(init_prop)[1:]
                 
                 # Append one row to the viol_df for each commit property for each obj                
-                for commit_prop in commit_prop_list:                                                                        
-                    viol_df = viol_df.append({'Object':str(obj),'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop)}, ignore_index=True)                                                                                               
-                print('finished loop')
-                print(viol_df)    
+                for idx, commit_prop in enumerate(commit_prop_list):
+                    init_dict = {'Object':[str(obj)],'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop)}
+                    init_df = pd.DataFrame(init_dict,index=[idx])
+                    df_dict[str(obj)+'.'+commit_prop] = init_df                                                       
+                
+    viol_df = pd.concat(list(df_dict.values()))
+    print(viol_df)    
+
     return True
       
 
