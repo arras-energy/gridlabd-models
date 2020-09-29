@@ -73,7 +73,6 @@ def on_init(t):
                          'meter':{'configuration':0,
                                   'nominal_voltage':['deviation']}}
     
-    
     ###########################################################################
     ################# SET THRESHOLDS & FILL VIOLATION DATAFRAME ###############
     ###########################################################################
@@ -115,27 +114,46 @@ def on_init(t):
         
                 # If the user input is a percentage, set the threshold to be a % or a +- range of its library value
                 if '%' in user_input:
+                    if 'taps' in init_prop:
+                        gridlabd.warning('%s, class %s should not have a percentage as a threshold.' % (obj,obj_class))
+                        continue
+                    
                     user_input = float(user_input.strip('%'))/100  
                     if thresh_class_dict.get(init_prop)[0] == 'rating':
+                        if user_input < 0.8 or user_input > 1.2:
+                            gridlabd.warning('User input for %s, class %s must be between 80 and 120 percent.' % (obj,obj_class))
+                            continue
                         thresh_max = lib_val * user_input
                       
                     elif thresh_class_dict.get(init_prop)[0] == 'deviation':
+                        if user_input < 0.0 or user_input > 0.2:
+                            gridlabd.warning('User input for %s, class %s must be between 0 and 20 percent.' % (obj,obj_class))
+                            continue
                         thresh_max = lib_val * (1.0 + user_input)
                         thresh_min = lib_val * (1.0 - user_input)                        
                                         
-                    else:
-                        gridlabd.warning('%s, class %s should not have a percentage as a threshold.' % (obj,obj_class))
                 
-                #TODO: I don't remember meaning of raise/lower taps being a limit
-                # If the user input a boolean, set the threshold to the library value
-                #elif thresh_class_dict.get(init_prop)[0] == 'limit':
+                # If the user input a number, set the threshold to that number.
+                elif user_input.isnumeric():
+                    user_input = float(user_input)
+                    if 'taps' in init_prop:
+                        gridlabd.warning('%s, class %s should not have a number as a threshold.' % (obj,obj_class))
+                        continue
+                    
+                    if user_input < (lib_val * 0.8) or user_input > (lib_val * 1.2):
+                        gridlabd.warning('User input for %s, class %s must be between %f and %f.' % (obj,obj_class, lib_val*0.8, lib_val*1.2))
+                        continue
+                    
+                    thresh_max = float(user_input)
+                
+                # If the user input is blank, set the threshold to the library value.
                 elif user_input == '':
                     thresh_max = lib_val
+                
+                # If the user input is an 'X', do not track violations for that property.
+                elif user_input.lower() == 'x':
+                    continue
 
-                # If the user didn't input a % or a boolean, set the threshold to the user input
-                else:
-                    thresh_max = user_input
-                    
                 # Identify the commit properties associated with the obj's init properties
                 commit_prop_list = thresh_class_dict.get(init_prop)[1:]
                 
