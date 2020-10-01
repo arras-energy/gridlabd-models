@@ -78,12 +78,13 @@ def on_init(t):
     ###########################################################################
 
     global viol_df
-    df_dict = {}
     object_list = gridlabd.get("objects")
+    df_dict = {}
+
                                           
     for obj in object_list:
         
-        obj_class = gridlabd.get_object(obj).get('class')                     
+        obj_class = gridlabd.get_object(obj).get('class')
                                                                                    
         if obj_class in thresh_dict:                                       
             
@@ -91,11 +92,10 @@ def on_init(t):
             #TODO: Make sure obj names all either do or do not have ica_      
             
             # Make a list of properties to check for that class            
-            init_prop_list = list(thresh_class_dict.keys())[1:]   
+            init_prop_list = list(thresh_class_dict.keys())[1:]  
                                                                                      
             # Iterate through those properties, appending to viol_df
             for init_prop in init_prop_list:
-                
                 
                 # First, get the library value of the given property.
                 if thresh_class_dict.get('configuration') == 0:
@@ -109,8 +109,7 @@ def on_init(t):
                 
                 # Then, use the user input to set the library value to a threshold
                 user_input = gridlabd.get_global(obj_class + '.' + init_prop)
-                #Todo: Set min_thresh to a reasonable value
-                thresh_min = -1000000
+                thresh_min = None
         
                 # If the user input is a percentage, set the threshold to be a % or a +- range of its library value
                 if '%' in user_input:
@@ -156,15 +155,12 @@ def on_init(t):
 
                 # Identify the commit properties associated with the obj's init properties
                 commit_prop_list = thresh_class_dict.get(init_prop)[1:]
-                
                 # Append one row to the viol_df for each commit property for each obj                
                 for idx, commit_prop in enumerate(commit_prop_list):
-                    init_dict = {'Object':[str(obj)],'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop)}
-                    init_df = pd.DataFrame(init_dict,index=[idx])
-                    df_dict[str(obj)+'.'+commit_prop] = init_df                                                       
-                
+                    # print(pd.DataFrame({'Object':[str(obj)],'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop)},index=[idx]))
+                    df_dict[str(obj)+'.'+init_prop+'.'+commit_prop] = pd.DataFrame({'Object':[str(obj)],'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop)},index=[idx])                                                      
     viol_df = pd.concat(list(df_dict.values()))
-    print(viol_df)    
+    viol_df.to_csv('viol_df.csv', index=False)   
 
     return True
       
