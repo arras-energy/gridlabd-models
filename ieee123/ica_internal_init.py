@@ -159,6 +159,7 @@ def on_init(t):
                 for idx, commit_prop in enumerate(commit_prop_list):
                     # print(pd.DataFrame({'Object':[str(obj)],'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop)},index=[idx]))
                     df_dict[str(obj)+'.'+init_prop+'.'+commit_prop] = pd.DataFrame({'Object':[str(obj)],'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop)},index=[idx])                                                      
+    
     viol_df = pd.concat(list(df_dict.values()))
     viol_df.to_csv('viol_df.csv', index=False)   
 
