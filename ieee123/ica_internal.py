@@ -10,7 +10,6 @@ Created on Tue Sep 22 12:17:43 2020
 import pandas as pd
 import re
 import gridlabd
-import pdb
 import math
 
 obj_list = []
@@ -19,8 +18,39 @@ viol_val_list = []
 viol_time_list = []
 
 
+def get_commit_val(obj, obj_class, commit_prop):
+    class_dict = gridlabd.get_class(obj_class)
+    # Trace up parent classes until you find the commit property
+    while commit_prop not in class_dict.keys():
+        class_dict = gridlabd.get_class(class_dict['class.parent'])
+    
+    commit_prop_dict = class_dict[commit_prop]
+    str_value = gridlabd.get_value(obj, commit_prop)
+    
+    # If the commit prop is a complex number, return the magnitude 
+    if commit_prop_dict['type']=='complex':
+        # Clean strings: i=j, no white spaces
+        str_value = str_value[:-2].replace('i','j').replace(' ','')
+        str_list = re.split('(?<!e)[-+]',str_value)
+        complex_type = str_list[2][-1]
+        x = float(str_list[1])
+        y = float(str_list[2][:-1])
+            
+        if complex_type == 'j':
+            c_val = complex(x,y)
+        elif complex_type == 'r':
+            c_val = complex(x * math.cos(y), x*math.sin(y))
+        elif complex_type == 'd':
+            c_val = complex(x * math.cos(y), x*math.sin(math.radians(y)))
+       
+        magnitude = math.sqrt(c_val.real**2 + c_val.imag**2)
+        return magnitude
+    
+    else:
+        return float(re.sub("[^0-9]","",str_value))
+
+
 def on_init(t):
-    print('\ninitializing\n')
     '''
     Based on user-selected options, thresholds are set for each relevant 
     property of each object. The violation data frame is populated with 
@@ -60,14 +90,13 @@ def on_init(t):
                                         'powerA_rating':[1,'rating','power_in_A','power_out_A'],
                                         'powerB_rating':[1,'rating','power_in_B','power_out_B'],
                                         'powerC_rating':[1,'rating','power_in_C','power_out_C'],
-                                        'primary_voltage':[1,'deviation'],
-                                        'secondary_voltage':[1,'deviation']},
+                                        'rated_top_oil_rise':[1,'rating','top_oil_hot_spot_temperature'],
+                                        'rated_winding_hot_spot_rise':[1,'rating','winding_hot_spot_temperature']},
                          'regulator':{'raise_taps':[1,'limit','tap_A','tap_B','tap_C'],
                                       'lower_taps':[1,'limit','tap_A','tap_B','tap_C'],
                                       'continuous_rating':[0,'rating','current_out_A','current_out_B','current_out_C','current_in_A','current_in_B','current_in_C']},
-                         'substation':{'nominal_voltage':[0,'deviation']},
                          'triplex_meter':{'nominal_voltage':[0,'deviation', 'measured_voltage_1', 'measured_voltage_2', 'measured_voltage_12', 'measured_voltage_N']},
-                         'meter':{'nominal_voltage':[0,'deviation']}}
+                         'meter':{'nominal_voltage':[0,'deviation','measured_voltage_A','measured_voltage_B','measured_voltage_C','measured_voltage_AB','measured_voltage_BC','measured_voltage_CA']}}
     
     ###########################################################################
     ################# SET THRESHOLDS & FILL VIOLATION DATAFRAME ###############
@@ -76,21 +105,15 @@ def on_init(t):
     object_list = gridlabd.get("objects")
     df_dict = {}
 
-                                          
     for obj in object_list:
         
-        obj_class = gridlabd.get_object(obj).get('class')
+        obj_class = gridlabd.get_object(obj).get('class') 
+        print(obj_class)           
         if obj_class in thresh_dict:                                       
-            
             thresh_class_dict = thresh_dict.get(obj_class)                        
-            #TODO: Make sure obj names all either do or do not have ica_      
-            
-            # Make a list of properties to check for that class            
             init_prop_list = list(thresh_class_dict.keys())
-                                                                                     
-            # Iterate through those properties, appending to viol_df
+            
             for init_prop in init_prop_list:
-                
                 # First, get the library value of the given property.
                 if thresh_class_dict.get(init_prop)[0] == 0:
                     lib_val = gridlabd.get_value(obj, init_prop)
@@ -105,9 +128,32 @@ def on_init(t):
                 user_input = gridlabd.get_global(obj_class + '.' + init_prop)
                 thresh_min = 0.0
         
+                # If the user input is blank, set the threshold to the library value.
+                if user_input == None:
+                    thresh_max = lib_val
+                    if 'taps' in init_prop:
+                        thresh_max = lib_val-1
+                        thresh_min = -(lib_val-1)
+                
+                # If the user input is an 'X', do not track violations for that property.
+                elif user_input.lower() == 'x':
+                    continue
+
+                # If the user input a number, set the threshold to that number.
+                elif user_input.isnumeric():
+                    user_input = float(user_input)
+                    if user_input < 0:
+                        gridlabd.warning('User input for %s, class %s must be a non-negative number or percentage, blank, or X.' % (obj,obj_class))
+                        continue
+                    
+                    if 'taps' in init_prop:
+                        gridlabd.warning('%s, class %s should not have a number as a threshold.' % (obj,obj_class))
+                        continue
+                    
+                    thresh_max = float(user_input)
 
                 # If the user input is a percentage, set the threshold to be a % or a +- range of its library value
-                if '%' in user_input:
+                elif '%' in user_input:
                     if 'taps' in init_prop:
                         gridlabd.warning('%s, class %s should not have a percentage as a threshold.' % (obj,obj_class))
                         continue
@@ -124,38 +170,15 @@ def on_init(t):
                         thresh_max = lib_val * (1.0 + user_input)
                         thresh_min = lib_val * (1.0 - user_input)                        
                                         
-                
-                # If the user input a number, set the threshold to that number.
-                elif user_input.isnumeric():
-                    user_input = float(user_input)
-                    if user_input < 0:
-                        gridlabd.warning('User input for %s, class %s must be a non-negative number or percentage, blank, or X.' % (obj,obj_class))
-                        continue
-
-                    if 'taps' in init_prop:
-                        gridlabd.warning('%s, class %s should not have a number as a threshold.' % (obj,obj_class))
-                        continue
-                                        
-                    thresh_max = float(user_input)
-                
-                # If the user input is blank, set the threshold to the library value.
-                elif user_input == '""':
-                    thresh_max = lib_val
-                
-                # If the user input is an 'X', do not track violations for that property.
-                elif user_input.lower() == 'x':
-                    continue
-
                 # Identify the commit properties associated with the obj's init properties
                 commit_prop_list = thresh_class_dict.get(init_prop)[2:]
                 # Append one row to the viol_df for each commit property for each obj                
                 for idx, commit_prop in enumerate(commit_prop_list):
-                    # print(pd.DataFrame({'Object':[str(obj)],'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop)},index=[idx]))
                     df_dict[str(obj)+'.'+init_prop+'.'+commit_prop] = pd.DataFrame({'Object':[str(obj)],'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop),'Violation Value':None, 'Violation Time':None})                                                      
     
     global viol_df 
     viol_df = pd.concat(list(df_dict.values()),ignore_index=True)
-    viol_df.to_csv('viol_df_orig.csv', index=False)   
+    viol_df.to_csv('viol_df_init.csv', index=False)   
 
     return True
       
@@ -183,22 +206,14 @@ def on_commit(t):
     global prop_list
     global viol_val_list
     global viol_time_list
-    
-
     option = gridlabd.get_global('violation_option')
 
     for index, row in viol_df.iterrows():
         # Only check for a violation if object hasn't already had a violation
         if option == '3' or row['Violation Time'] == None:
             # Get the real-time value for the property
-            str_value = gridlabd.get_value(row['Object'], row['Commit Prop'])
+            value = get_commit_val(row['Object'],row['Class'],row['Commit Prop'])
 
-            if 'j' in str_value:
-                c_val = complex(str_value[:-2])
-                value = math.sqrt(c_val.real**2 + c_val.imag**2)
-            else:
-                value = float(re.sub("[^0-9]","",str_value))
-            
             # Compare it against the min and max threshold
             if value > row['Max Thresh'] or value < row['Min Thresh']:
                 print('obj %s IS violating'%(row['Object']))
@@ -218,7 +233,6 @@ def on_term(t):
     print("\nterminating")
     option = gridlabd.get_global('violation_option')
 
-    
     if option == '1':
         viol_df.to_csv('viol_df_opt1.csv', index=False)   
 

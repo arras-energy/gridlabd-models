@@ -7,8 +7,3 @@ line149to1,rating.summer.continuous|current_out_C,553.1544275427686,2018-03-01 0
 line149to1,rating.summer.continuous|current_in_C,553.1544321065082,2018-03-01 00:00:00 PST
 line149to1,rating.winter.continuous|current_out_C,553.1544275427686,2018-03-01 00:00:00 PST
 line149to1,rating.winter.continuous|current_in_C,553.1544321065082,2018-03-01 00:00:00 PST
-reg150to15001,continuous_rating|current_out_B,408268217866.0,2018-03-01 00:00:00 PST
-reg150to15001,continuous_rating|current_out_C,245144553149.0,2018-03-01 00:00:00 PST
-reg25to2501,continuous_rating|current_out_C,63224419558.0,2018-03-01 00:00:00 PST
-reg160to16001,continuous_rating|current_out_B,18366995237.0,2018-03-01 00:00:00 PST
-reg160to16001,continuous_rating|current_out_C,110662216217.0,2018-03-01 00:00:00 PST
