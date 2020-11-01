@@ -3,22 +3,74 @@
 """
 Created on Tue Sep 22 12:17:43 2020
 
+Locate the ICA files with GLPATH, e.g.,
+
+    host% export GLPATH=<ica-folder>:$GLPATH
+    
+To use this use the following command line:
+    
+    host% gridlabd <mymodel>.glm ica_analysis.glm
+    
+ica_analysis.glm:
+    
+    #set ...
+    #input "ica_config.csv" -f ...
+    import ica_analysis;
+
 @author: saraborchers
 """
-
 
 import pandas as pd
 import re
 import gridlabd
 import math
 
+# Create global lists to access and modify on_commit
 obj_list = []
 prop_list = []
 viol_val_list = []
 viol_time_list = []
 
+def check_phases(obj):
+    '''
+    Returns a list of commit properties to check for a given
+    meter, based on its phases and configuration.
+    '''
+
+    phase = gridlabd.get_value(obj,'phases')
+    # Alphabetize the phase string
+    phase = ''.join(sorted(phase))
+    commit_props = []
+    # Map commit prop names to possible phase combinations
+    phase_dict = {'AB':['AB'],'AC':['CA'],'BC':['BC'],'ABC':['AB','BC','CA']}
+            
+    if phase[-1] == 'D':
+        phase = phase[:-1]
+        # If there is only one phase, only check the one associated commit prop
+        if len(phase) == 1:
+            commit_props.append('measured_voltage_'+ phase[0])
+        # Otherwise, check all combinations of commit props
+        else:
+            phase_list = phase_dict[phase]
+            for p in phase_list:
+                commit_props.append('measured_voltage_' + p)
+
+    else:
+        if phase[-1] == 'N':
+            phase = phase[:-1]
+        for p in phase:
+            commit_props.append('measured_voltage_' + p)
+
+    return commit_props
+
 
 def get_commit_val(obj, obj_class, commit_prop):
+    '''
+    Returns the real-time value for a given commit property
+    for a given object, accounting for complex numbers and variations 
+    in string formatting. 
+    '''
+    
     class_dict = gridlabd.get_class(obj_class)
     # Trace up parent classes until you find the commit property
     while commit_prop not in class_dict.keys():
@@ -55,29 +107,20 @@ def on_init(t):
     Based on user-selected options, thresholds are set for each relevant 
     property of each object. The violation data frame is populated with 
     properties to check with each commit, and their thesholds. 
-    '''  
-    
-    ###########################################################################
-    ######################### READ USER INPUTS ################################
-    ###########################################################################
-    
-    '''
+ 
     There are 2 options for how to read in a csv on initialization:
     1) Global thresholds are set through csv converter.
     2) Read config file directly into script, creating a global for each entry.
     
     Option 1 is currently default, Option 2 is commented out. 
     '''
-    
-    # Option 2
-    # config_globals = pd.read_csv("ica_config_file.csv")
-    # for index in range(len(config_globals)):
-    #     gridlabd.set_global("ica_" + config_globals.iloc[index, 0], \
-    #                         str(config_globals.iloc[index, 1]))
-
-    ###########################################################################
-    ######################### CREATE MASTER DICTIONARY ########################
-    ###########################################################################
+    if gridlabd.get_global('input_option') == 2:
+        # config_globals = pd.read_csv("ica_config_file.csv")
+        # for index in range(len(config_globals)):
+        #     gridlabd.set_global(config_globals.iloc[index, 0], \
+        #                         str(config_globals.iloc[index, 1]))
+        # print(gridlabd.get('globals'))
+        pass
 
     # In thresh_dict, key = class, val = dictionary w/ info to set thresh
     #   rating: set the threshold as a % of the max rating
@@ -90,17 +133,13 @@ def on_init(t):
                                         'powerA_rating':[1,'rating','power_in_A','power_out_A'],
                                         'powerB_rating':[1,'rating','power_in_B','power_out_B'],
                                         'powerC_rating':[1,'rating','power_in_C','power_out_C'],
-                                        'rated_top_oil_rise':[1,'rating','top_oil_hot_spot_temperature'],
-                                        'rated_winding_hot_spot_rise':[1,'rating','winding_hot_spot_temperature']},
+                                        'percent_loss_of_life':[0,'rating','percent_loss_of_life']},
                          'regulator':{'raise_taps':[1,'limit','tap_A','tap_B','tap_C'],
                                       'lower_taps':[1,'limit','tap_A','tap_B','tap_C'],
                                       'continuous_rating':[0,'rating','current_out_A','current_out_B','current_out_C','current_in_A','current_in_B','current_in_C']},
                          'triplex_meter':{'nominal_voltage':[0,'deviation', 'measured_voltage_1', 'measured_voltage_2', 'measured_voltage_12', 'measured_voltage_N']},
                          'meter':{'nominal_voltage':[0,'deviation','measured_voltage_A','measured_voltage_B','measured_voltage_C','measured_voltage_AB','measured_voltage_BC','measured_voltage_CA']}}
     
-    ###########################################################################
-    ################# SET THRESHOLDS & FILL VIOLATION DATAFRAME ###############
-    ###########################################################################
 
     object_list = gridlabd.get("objects")
     df_dict = {}
@@ -108,13 +147,14 @@ def on_init(t):
     for obj in object_list:
         
         obj_class = gridlabd.get_object(obj).get('class') 
-        print(obj_class)           
         if obj_class in thresh_dict:                                       
             thresh_class_dict = thresh_dict.get(obj_class)                        
             init_prop_list = list(thresh_class_dict.keys())
             
             for init_prop in init_prop_list:
                 # First, get the library value of the given property.
+                if init_prop == 'percent_loss_of_life':
+                    lib_val = 0.0001
                 if thresh_class_dict.get(init_prop)[0] == 0:
                     lib_val = gridlabd.get_value(obj, init_prop)
                 else:
@@ -171,37 +211,42 @@ def on_init(t):
                         thresh_min = lib_val * (1.0 - user_input)                        
                                         
                 # Identify the commit properties associated with the obj's init properties
-                commit_prop_list = thresh_class_dict.get(init_prop)[2:]
-                # Append one row to the viol_df for each commit property for each obj                
+                if obj_class == 'meter':
+                    commit_prop_list = check_phases(obj)
+                else:
+                    commit_prop_list = thresh_class_dict.get(init_prop)[2:]
+
+
+                # Create a dataframe for each commit property, and store it in a dictionary                
                 for idx, commit_prop in enumerate(commit_prop_list):
                     df_dict[str(obj)+'.'+init_prop+'.'+commit_prop] = pd.DataFrame({'Object':[str(obj)],'Class':str(obj_class),'Init Prop':init_prop,'Min Thresh':thresh_min,'Max Thresh':thresh_max,'Commit Prop':str(commit_prop),'Violation Value':None, 'Violation Time':None})                                                      
     
-    global viol_df 
+    global viol_df
+    # Create a master dataframe by concatenating all the dfs in the dictionary
     viol_df = pd.concat(list(df_dict.values()),ignore_index=True)
     viol_df.to_csv('viol_df_init.csv', index=False)   
 
     return True
       
 
-'''
-ON_COMMIT
-For each key in master dictionary, get the value for each property and compare it to the threshold.
-If threshold is exceeded, record the object, property, and value, and exit.
-
-Option 1: 
-Record the first violation of each object within the violation dataframe. 
-The entire dataframe, with all objects (violated or not) is saved to a csv.
-
-Option 2:
-Record the first violation of each object in a new dataframe, which only tracks
-the object, the property violated, the value of the violation, and the time.
-
-Option 3:
-Same as Option 2, except ALL violations are recorded, rather than just the first.
-            
-'''
 
 def on_commit(t):
+    '''
+    For each key in master dictionary, get the value for each property and compare it to the threshold.
+    If threshold is exceeded, record the object, property, and value, and exit.
+    
+    Option 1: 
+    Record the first violation of each object within the violation dataframe. 
+    The entire dataframe, with all objects (violated or not) is saved to a csv.
+    
+    Option 2:
+    Record the first violation of each object in a new dataframe, which only tracks
+    the object, the property violated, the value of the violation, and the time.
+    
+    Option 3:
+    Same as Option 2, except ALL violations are recorded, rather than just the first.
+    '''
+
     global obj_list
     global prop_list
     global viol_val_list
@@ -213,7 +258,8 @@ def on_commit(t):
         if option == '3' or row['Violation Time'] == None:
             # Get the real-time value for the property
             value = get_commit_val(row['Object'],row['Class'],row['Commit Prop'])
-
+            if row['Commit Prop'] == 'measured_voltage_12':
+                value /= 2
             # Compare it against the min and max threshold
             if value > row['Max Thresh'] or value < row['Min Thresh']:
                 print('obj %s IS violating'%(row['Object']))
@@ -232,7 +278,6 @@ def on_commit(t):
 def on_term(t):
     print("\nterminating")
     option = gridlabd.get_global('violation_option')
-
     if option == '1':
         viol_df.to_csv('viol_df_opt1.csv', index=False)   
 
