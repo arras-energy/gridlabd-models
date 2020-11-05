@@ -1,0 +1,9 @@
+Object,Property,Violation Value,Violation Time
+line8to13,rating.summer.continuous|current_out_A,606.4538231011492,2018-03-01 00:00:00 PST
+line8to13,rating.summer.continuous|current_in_A,606.4533270656531,2018-03-01 00:00:00 PST
+line8to13,rating.winter.continuous|current_out_A,606.4538231011492,2018-03-01 00:00:00 PST
+line8to13,rating.winter.continuous|current_in_A,606.4533270656531,2018-03-01 00:00:00 PST
+line149to1,rating.summer.continuous|current_out_C,553.1544275427686,2018-03-01 00:00:00 PST
+line149to1,rating.summer.continuous|current_in_C,553.1544321065082,2018-03-01 00:00:00 PST
+line149to1,rating.winter.continuous|current_out_C,553.1544275427686,2018-03-01 00:00:00 PST
+line149to1,rating.winter.continuous|current_in_C,553.1544321065082,2018-03-01 00:00:00 PST

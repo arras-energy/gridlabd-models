@@ -11,17 +11,19 @@
 // Assumes the model is run from parent of model folder
 //
 #set suppress_repeat_messages=FALSE
-
 #include "config/default.glm"
+
 #define CONFIGFILE=config/default.glm
 #ifexist config/local.glm
 #include "config/local.glm"
 #set CONFIGFILE=config/local.glm
 #endif
+#warning here one
 
 //#set strictnames=FALSE
 
-#input "../ica_config.csv" -f config -t config
+#input "ica_config.csv" -f config -t config
+#warning here two
 //
 // Check the configuration
 //

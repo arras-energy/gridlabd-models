@@ -1,5 +1,5 @@
 #define ﻿input_option=1
-#define violation_option=3
+#define violation_option=2
 #define underground_line.rating.summer.continuous=60%
 #define underground_line.rating.winter.continuous=60%
 #define overhead_line.rating.summer.continuous=55%
