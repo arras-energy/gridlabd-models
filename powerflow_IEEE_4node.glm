@@ -6,6 +6,9 @@
 /////////////////////////////////////////////
 // BEGIN
 /////////////////////////////////////////////
+#set suppress_repeat_messages=FALSE
+#input "ieee123/ica_config_file.csv" -f config -t config
+module ica_internal;
 
 clock {
 	timestamp '2000-01-01 0:00:00';

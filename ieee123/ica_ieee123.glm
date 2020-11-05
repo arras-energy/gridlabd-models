@@ -21,7 +21,7 @@
 
 //#set strictnames=FALSE
 
-#input "ica_config_file.csv" -f config -t config
+#input "../ica_config.csv" -f config -t config
 //
 // Check the configuration
 //
@@ -79,7 +79,7 @@ clock {
 #else
 #error TIMEZONE is not specified in ${CONFIGFILE}
 #endif // TIMEZONE
-module ica_internal;
+module ica_analysis;
 
 ///////////////////////////////////////////////////////
 //

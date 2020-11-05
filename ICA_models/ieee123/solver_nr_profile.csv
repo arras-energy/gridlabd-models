@@ -1,0 +1,5 @@
+timestamp,duration[microsec],iteration,bus_count,branch_count,error
+2018-03-01 00:00:00 PST,59325.0,4,134,135,false
+2018-03-01 00:00:00 PST,3174.0,1,134,135,false
+2018-03-01 00:00:30 PST,2967.0,1,134,135,false
+2018-03-01 00:00:30 PST,11159.0,3,134,135,false
