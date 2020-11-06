@@ -1,0 +1,5 @@
+#warning ica mod before csv
+#input "ica_config.csv" -f config -t config
+#warning ica mod after csv
+module ica_analysis;
+#warning ica mod after mod 

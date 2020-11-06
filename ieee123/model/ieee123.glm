@@ -10,6 +10,7 @@
 // Read the configuration file for this system
 // Assumes the model is run from parent of model folder
 //
+#warning running model
 #include "config/default.glm"
 #define CONFIGFILE=config/default.glm
 #ifexist config/local.glm

@@ -18,12 +18,10 @@
 #include "config/local.glm"
 #set CONFIGFILE=config/local.glm
 #endif
-#warning here one
 
+//#include "ica_config.glm"
 //#set strictnames=FALSE
-
-#input "ica_config.csv" -f config -t config
-#warning here two
+//#input "ica_config.csv" -f config -t config
 //
 // Check the configuration
 //
@@ -81,7 +79,7 @@ clock {
 #else
 #error TIMEZONE is not specified in ${CONFIGFILE}
 #endif // TIMEZONE
-module ica_analysis;
+//module ica_analysis;
 
 ///////////////////////////////////////////////////////
 //

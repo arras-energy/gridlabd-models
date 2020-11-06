@@ -1,0 +1,17 @@
+#define ﻿input_option=1
+#define violation_option=2
+#define underground_line.rating.summer.continuous=60%
+#define underground_line.rating.winter.continuous=60%
+#define overhead_line.rating.summer.continuous=55%
+#define overhead_line.rating.winter.continuous=55%
+#define transformer.power_rating=
+#define transformer.powerA_rating=
+#define transformer.powerB_rating=
+#define transformer.powerC_rating=
+#define transformer.rated_top_oil_rise=
+#define transformer.rated_winding_spot_rise=
+#define regulator.raise_taps=
+#define regulator.lower_taps=
+#define regulator.continuous_rating=80%
+#define triplex_meter.nominal_voltage=
+#define meter.nominal_voltage=5%
