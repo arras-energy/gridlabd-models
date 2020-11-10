@@ -16,7 +16,7 @@ model = "model/ieee123.glm"
 # filepath = "../"
 # model = "IEEE-13.glm"
 
-## Use for IEEE-4 - Throws error 
+## Uncomment for IEEE-4 - Throws error 
 # filepath = '../'
 # model = 'powerflow_IEEE_4node.glm'
 
