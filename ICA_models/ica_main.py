@@ -8,26 +8,23 @@ Created on Thu Nov  5 09:42:40 2020
 import gridlabd
 import os
 
-print('running ica_main.py')
+# Uncomment for IEEE-123 - works!
+filepath = "../ieee123"
+model = "model/ieee123.glm"
 
-# Run glm that modifies the IEEE model
-gridlabd.command('../ICA_models/ica_mod.glm')
+## Uncomment for IEEE-13 - Throws error
+# filepath = "../"
+# model = "IEEE-13.glm"
+
+## Use for IEEE-4 - Throws error 
+# filepath = '../'
+# model = 'powerflow_IEEE_4node.glm'
+
+# Run the modification file
+print(os.getcwd())
+gridlabd.command("../ICA_models/ica_mod.glm")
 
 # Run the IEEE model
-# os.chdir("../")
-print(os.getcwd())
-gridlabd.command("../ieee123/model/ieee123.glm")
-
-print('Ran both glm files')
+os.chdir(filepath)
+gridlabd.command(model)
 gridlabd.start("wait")
-
-'''
-Question: I shouldn't have to have ica_config.glm in ICA_models
-for this to run, right? It should be created by the input file.
-But it doesn't run without it... different error when it is 
-included. 
-'''
-
-# play around with removing os, might be causing error
-
-# os.chdir("../ieee123")

@@ -1434,11 +1434,6 @@
 			"access" : "PUBLIC",
 			"value" : "{}"
 		},
-		"csv_load_options" : {
-			"type" : "char1024",
-			"access" : "PUBLIC",
-			"value" : "-f config -t config"
-		},
 		"﻿input_option" : {
 			"type" : "char1024",
 			"access" : "PUBLIC",
