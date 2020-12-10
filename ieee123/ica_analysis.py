@@ -24,6 +24,7 @@ import pandas as pd
 import re
 import gridlabd
 import math
+print("running ica_analysis.py")
 
 # Create global lists to access and modify on_commit
 obj_list = []
@@ -115,12 +116,17 @@ def on_init(t):
     Option 1 is currently default, Option 2 is commented out. 
     '''
     if gridlabd.get_global('input_option') == 2:
-        # config_globals = pd.read_csv("ica_config_file.csv")
+        '''
+        Do not use the csv converter. Not sure how to do this, since it's built
+        into the file structure?        
+        '''
+        # config_globals = pd.read_csv("ica_config.csv")
         # for index in range(len(config_globals)):
         #     gridlabd.set_global(config_globals.iloc[index, 0], \
         #                         str(config_globals.iloc[index, 1]))
         # print(gridlabd.get('globals'))
         pass
+        
 
     # In thresh_dict, key = class, val = dictionary w/ info to set thresh
     #   rating: set the threshold as a % of the max rating

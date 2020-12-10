@@ -10,6 +10,13 @@
 // Read the configuration file for this system
 // Assumes the model is run from parent of model folder
 //
+
+#set suppress_repeat_messages=FALSE
+#template get ica
+#template list ica
+#template info ica
+#print "${GLPATH}"
+#include "template/US/CA/SLAC/ica-analysis.glm"
 #warning running model
 #include "config/default.glm"
 #define CONFIGFILE=config/default.glm

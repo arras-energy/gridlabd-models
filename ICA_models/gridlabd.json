@@ -594,7 +594,7 @@
 		"command_line" : {
 			"type" : "char1024",
 			"access" : "REFERENCE",
-			"value" : "gridlabd ../ICA_models/ica_mod.glm ../ieee123/model/ieee123.glm"
+			"value" : "/usr/local/opt/gridlabd/4.2.13-201027-master/bin/gridlabd.bin ica_mod.glm"
 		},
 		"environment" : {
 			"type" : "char1024",
@@ -744,12 +744,12 @@
 		"modelname" : {
 			"type" : "char1024",
 			"access" : "REFERENCE",
-			"value" : "../ICA_models/ica_mod.glm"
+			"value" : "ica_mod.glm"
 		},
 		"execdir" : {
 			"type" : "char1024",
 			"access" : "REFERENCE",
-			"value" : "gridlabd"
+			"value" : "/usr/local/opt/gridlabd/4.2.13-201027-master/bin"
 		},
 		"strictnames" : {
 			"type" : "bool",
@@ -769,12 +769,12 @@
 		"randomstate" : {
 			"type" : "int32",
 			"access" : "PUBLIC",
-			"value" : "0"
+			"value" : "22579296"
 		},
 		"randomseed" : {
 			"type" : "int32",
 			"access" : "PUBLIC",
-			"value" : "0"
+			"value" : "22579296"
 		},
 		"include" : {
 			"type" : "char1024",
@@ -1210,7 +1210,7 @@
 		"exename" : {
 			"type" : "char1024",
 			"access" : "REFERENCE",
-			"value" : "gridlabd"
+			"value" : "/usr/local/opt/gridlabd/4.2.13-201027-master/bin/gridlabd.bin"
 		},
 		"wget_options" : {
 			"type" : "char1024",
@@ -1335,7 +1335,7 @@
 		"timezone_locale" : {
 			"type" : "char1024",
 			"access" : "REFERENCE",
-			"value" : "UTC0"
+			"value" : "UTC"
 		},
 		"glm_save_options" : {
 			"type" : "set",
@@ -1405,7 +1405,7 @@
 		"datadir" : {
 			"type" : "char1024",
 			"access" : "PUBLIC",
-			"value" : "gridlabd/share/gridlabd"
+			"value" : ""
 		},
 		"json_complex_format" : {
 			"type" : "set",
@@ -1467,7 +1467,7 @@
 		"transformer.power_rating" : {
 			"type" : "char1024",
 			"access" : "PUBLIC",
-			"value" : ""
+			"value" : "\u0001"
 		},
 		"transformer.powerA_rating" : {
 			"type" : "char1024",
