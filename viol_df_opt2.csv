@@ -1,0 +1,17 @@
+Object,Property,Violation Value,Violation Time
+overhead_line3,rating.summer.continuous|current_out_A,577.356425906909,2013-12-31 19:00:00 EST
+overhead_line3,rating.summer.continuous|current_out_C,592.0045438569285,2013-12-31 19:00:00 EST
+overhead_line3,rating.summer.continuous|current_in_A,577.356425906909,2013-12-31 19:00:00 EST
+overhead_line3,rating.summer.continuous|current_in_C,592.0045438569285,2013-12-31 19:00:00 EST
+overhead_line3,rating.winter.continuous|current_out_A,577.356425906909,2013-12-31 19:00:00 EST
+overhead_line3,rating.winter.continuous|current_out_C,592.0045438569285,2013-12-31 19:00:00 EST
+overhead_line3,rating.winter.continuous|current_in_A,577.356425906909,2013-12-31 19:00:00 EST
+overhead_line3,rating.winter.continuous|current_in_C,592.0045438569285,2013-12-31 19:00:00 EST
+XFMR1,power_rating|power_in,505196.97688426444,2013-12-31 19:00:00 EST
+XFMR1,power_rating|power_out,494064.773081425,2013-12-31 19:00:00 EST
+XFMR1,powerA_rating|power_in_A,199099.34551625227,2013-12-31 19:00:00 EST
+XFMR1,powerA_rating|power_out_A,194164.87838947598,2013-12-31 19:00:00 EST
+XFMR1,powerB_rating|power_in_B,153348.7757219144,2013-12-31 19:00:00 EST
+XFMR1,powerB_rating|power_out_B,150000.0,2013-12-31 19:00:00 EST
+XFMR1,powerC_rating|power_in_C,152834.57143097566,2013-12-31 19:00:00 EST
+XFMR1,powerC_rating|power_out_C,150000.0,2013-12-31 19:00:00 EST

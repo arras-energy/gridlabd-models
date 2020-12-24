@@ -1,7 +1,8 @@
-#include "ica_config.glm"
+// Lines added to run ICA
+#set suppress_repeat_messages=FALSE
 #set strictnames=FALSE
-//#input "ica_config.csv" -f config -t config
-module ieee123/ica_analysis;
+#input "ieee123/ica_config.csv" -f config -t config
+module ica_analysis_test;
 
 clock {
 	timestamp '2014-01-01 0:00:00';

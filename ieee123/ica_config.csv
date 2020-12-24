@@ -1,4 +1,4 @@
-﻿input_option,1
+input_option,1
 violation_option,2
 underground_line.rating.summer.continuous,60%
 underground_line.rating.winter.continuous,60%
@@ -13,5 +13,5 @@ transformer.rated_winding_spot_rise,
 regulator.raise_taps,
 regulator.lower_taps,
 regulator.continuous_rating,80%
-triplex_meter.nominal_voltage,
+triplex_meter.nominal_voltage,5%
 meter.nominal_voltage,5%

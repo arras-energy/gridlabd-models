@@ -10,18 +10,20 @@
 // Read the configuration file for this system
 // Assumes the model is run from parent of model folder
 //
-#set suppress_repeat_messages=FALSE
-#include "config/default.glm"
 
+#include "config/default.glm"
 #define CONFIGFILE=config/default.glm
 #ifexist config/local.glm
 #include "config/local.glm"
 #set CONFIGFILE=config/local.glm
 #endif
 
-#include "ica_config.glm"
+// Lines added to run ICA
+#set suppress_repeat_messages=FALSE
 #set strictnames=FALSE
 #input "ica_config.csv" -f config -t config
+module ica_analysis;
+
 //
 // Check the configuration
 //
@@ -79,7 +81,6 @@ clock {
 #else
 #error TIMEZONE is not specified in ${CONFIGFILE}
 #endif // TIMEZONE
-module ica_analysis;
 
 ///////////////////////////////////////////////////////
 //

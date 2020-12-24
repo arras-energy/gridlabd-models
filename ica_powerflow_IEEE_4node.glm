@@ -6,6 +6,13 @@
 /////////////////////////////////////////////
 // BEGIN
 /////////////////////////////////////////////
+// Lines added to run ICA
+#set suppress_repeat_messages=FALSE
+#set strictnames=FALSE
+#input "ieee123/ica_config.csv" -f config -t config
+module ica_analysis_test;
+
+
 clock {
 	timestamp '2000-01-01 0:00:00';
 	timezone EST+5EDT;

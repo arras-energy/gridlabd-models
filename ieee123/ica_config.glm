@@ -1,4 +1,4 @@
-#define ﻿input_option=1
+#define input_option=1
 #define violation_option=2
 #define underground_line.rating.summer.continuous=60%
 #define underground_line.rating.winter.continuous=60%
@@ -13,5 +13,5 @@
 #define regulator.raise_taps=
 #define regulator.lower_taps=
 #define regulator.continuous_rating=80%
-#define triplex_meter.nominal_voltage=
+#define triplex_meter.nominal_voltage=5%
 #define meter.nominal_voltage=5%

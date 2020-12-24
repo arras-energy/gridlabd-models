@@ -24,7 +24,6 @@ import pandas as pd
 import re
 import gridlabd
 import math
-print("running ica_analysis.py")
 
 # Create global lists to access and modify on_commit
 obj_list = []
