@@ -3,3 +3,4 @@ ieee123/ica_config_file.glm
 ieee123/gridlabd.json
 ieee123/__pycache__/ica_run.cpython-37.pyc
 ieee123/solver_nr_profile.csv
+*.pyc
