@@ -16,7 +16,7 @@
 #include "config/local.glm"
 #set CONFIGFILE=config/local.glm
 #endif
-
+#set literal_if=FALSE
 //
 // Check the configuration
 //

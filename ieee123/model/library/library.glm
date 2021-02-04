@@ -2,10 +2,6 @@
 // Copyright (C) 2016, Stanford University
 // Author: dchassin@slac.stanford.edu
 
-#ifndef POLE_TYPE
-#define POLE_TYPE=node
-#endif
-
 
 //Conductors
 object overhead_line_conductor {
