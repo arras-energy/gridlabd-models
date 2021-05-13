@@ -10,11 +10,8 @@
 
 //Pure nodes
 
-#ifndef POLE_TYPE
-#define POLE_TYPE=node
-#endif
 
-object ${POLE_TYPE} {
+object ${POLE_TYPE:-node} {
 	name node_3;
 	groupid nodevolts;
 	phases CN;
@@ -29,7 +26,7 @@ object ${POLE_TYPE} {
 
 
 
-object ${POLE_TYPE} {
+object ${POLE_TYPE:-node} {
 	name node_8;
 	groupid nodevolts;
     phases ABCN;
@@ -43,7 +40,7 @@ object ${POLE_TYPE} {
 }
 
 
-object ${POLE_TYPE} {
+object ${POLE_TYPE:-node} {
 	name node_13;
 	groupid nodevolts;
     nominal_voltage 2401.7771;
@@ -75,7 +72,7 @@ object meter {
 	nominal_voltage 2401.7771;
 }
 
-object ${POLE_TYPE} {
+object ${POLE_TYPE:-node}{
     name node_15;
     phases CN;
 	latitude 35N23.076; 
@@ -95,7 +92,7 @@ object node {
 	nominal_voltage 2401.7771;
 }
 
-object ${POLE_TYPE} {
+object ${POLE_TYPE:-node} {
 	name node_21;
 	groupid nodevolts;
 	phases ABCN;
@@ -108,7 +105,7 @@ object ${POLE_TYPE} {
 #endif
 }
 
-object ${POLE_TYPE} {
+object ${POLE_TYPE:-node} {
 	name node_23;
 	groupid nodevolts;
 	phases ABCN;
@@ -275,7 +272,7 @@ object node {
 	nominal_voltage 2401.7771;
 }
 
-object ${POLE_TYPE} {
+object ${POLE_TYPE:-node} {
 	name node_149;
 	groupid nodevolts;
 	phases ABCN;
@@ -355,7 +352,7 @@ object node {
 	nominal_voltage 2401.7771;
 }
 
-object ${POLE_TYPE} {
+object ${POLE_TYPE:-node}{
 	name node_901;
 	groupid nodevolts;
 	phases AN;
@@ -382,7 +379,7 @@ object node {
 	nominal_voltage 2401.7771;
 }
 
-object ${POLE_TYPE} {
+object ${POLE_TYPE:-node} {
 	name node_15001;
 	groupid nodevolts;
 	phases ABCN;
