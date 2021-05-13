@@ -1,0 +1,9 @@
+.DS_Store
+
+*.pyc
+*.txt
+*.json
+*.csv
+
+ieee123/config/local.glm
+ieee123/gridlabd.json

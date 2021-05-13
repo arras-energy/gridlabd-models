@@ -82,10 +82,16 @@ clock {
 ///////////////////////////////////////////////////////
 #ifexist data/${WEATHER}
 module climate;
+module tape;
 object climate {
         name weather;
         tmyfile "data/${WEATHER}";
         interpolate QUADRATIC;
+  	object player {
+		property wind_speed; 
+		file "test_wind.player";
+		
+	};
 }
 #else
 #error WEATHER is not specified in ${CONFIGFILE}

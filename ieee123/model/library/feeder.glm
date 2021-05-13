@@ -10,6 +10,15 @@
 
 //Pure nodes
 
+#if POLE_TYPE==pole
+object fault_check
+{
+    check_mode ONCHANGE;
+    output_filename "fault_check.txt";
+    reliability_mode TRUE;
+    grid_association true;
+}
+#endif //POLE_TYPE
 
 object ${POLE_TYPE:-node} {
 	name node_3;
