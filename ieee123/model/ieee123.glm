@@ -85,7 +85,7 @@ module climate;
 module tape;
 object climate {
         name weather;
-        tmyfile "data/${WEATHER}";
+//        tmyfile "data/${WEATHER}";
         interpolate QUADRATIC;
   	object player {
 		property wind_speed; 
@@ -249,7 +249,7 @@ export mysql --graph ${MYSQL_NAME}_graph;
 
 #endif // MYSQL_ENABLE
 
-#if VOLTDUMP==all
+#if VOLTDUMP==on
 #if LOADS==on
 #include "model/library/voltdump.glm"
 #else
