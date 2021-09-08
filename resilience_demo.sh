@@ -7,16 +7,7 @@
 #   OPENFIDO_INPUT --> input folder when MDB files are placed
 #   OPENFIDO_OUTPUT --> output folder when CSV files are placed
 #
-# Special files:
-#
-#   config.csv -> run configuration
-#
-#     MODELNAME,<modelname> --> (optional) input file name in OPENFIDO_INPUT folder (default *.glm)
-#     GLMCONFIG,<configname> --> (optional) configuration file to load prior to loading the model (default "config.glm")
-#     GLMRECORD,<recordername> --> (optional) recorder file to load after loading the model (default "recorders.glm")
-#     TEMPLATE,<gitname> --> (optional) GitHub template name to use (default "ica_analysis.glm")
-#     <template-configvar>,<value> --> (optional) GridLAB-D template configuration variable (see "gridlabd template config" for details)
-#
+
 VERSION=0
 EXECPATHNAME=$0
 if [ "${EXECPATHNAME##/*}" != "" ]; then
