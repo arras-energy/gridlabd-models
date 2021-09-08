@@ -176,7 +176,7 @@ cd "$TMP"
 debug '* ' "TMP = ${TMP} (working folder)"
 
 # pipeline initialization
-[ -f "${OPENFIDO_INIT}" ] && . ${OPENFIDO_INIT} || error $E_INTERNAL "${OPENFIDO_INIT} failed"
+[ -f "${OPENFIDO_INIT}" ] && ( . ${OPENFIDO_INIT} || error $E_INTERNAL "${OPENFIDO_INIT} failed" )
 
 # display environment information
 debug "Environment settings:"
