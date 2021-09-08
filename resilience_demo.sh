@@ -206,3 +206,4 @@ debug "Input files:"
 # perform the main run
 #. ${OPENFIDO_RUN} || error $E_INTERNAL "${OPENFIDO_RUN} failed"
 gridlabd -W ${EXECPATH}/ieee123 model/ieee123.glm -o ${OPENFIDO_OUTPUT}/model.html -D html_save_options="--show --cluster"
+cp ${EXECPATH}/ieee123/data/pole_data.csv ${OUTPUT_OUTPUT}
