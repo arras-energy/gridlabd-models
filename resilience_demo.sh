@@ -205,4 +205,4 @@ debug "Input files:"
 
 # perform the main run
 #. ${OPENFIDO_RUN} || error $E_INTERNAL "${OPENFIDO_RUN} failed"
-gridlabd -W ieee123 model-ieee123.glm -o model.html -D html_save_options="--show --cluster"
+gridlabd -W ${EXECPATH}/ieee123 model-ieee123.glm -o model.html -D html_save_options="--show --cluster"
