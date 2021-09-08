@@ -44,7 +44,7 @@
 // Realtime run
 //
 #set show_progress=0
-#set suppress_repeat_messages=FALSE // allow all similar messages to be logged
+#set suppress_repeat_messages=TRUE // allow all similar messages to be logged
 
 #ifdef HOSTNAME
 #set hostname=${HOSTNAME}  // tells clients where to get the data
