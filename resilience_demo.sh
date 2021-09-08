@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# ICA Analysis
+# Resilience demonstration
 #
 # Environment:
 #
@@ -203,4 +203,5 @@ debug "Input files:"
 [ "${OPENFIDO_DEBUG:-no}" = "yes" ] && ls -l ${OPENFIDO_INPUT} | sed '1,$s/^/* /'
 
 # perform the main run
-. ${OPENFIDO_RUN} || error $E_INTERNAL "${OPENFIDO_RUN} failed"
+#. ${OPENFIDO_RUN} || error $E_INTERNAL "${OPENFIDO_RUN} failed"
+gridlabd -W ieee123 model-ieee123.glm -o model.html -D html_save_options="--show --cluster"
