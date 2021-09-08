@@ -82,7 +82,9 @@ clock {
 ///////////////////////////////////////////////////////
 #ifexist data/${WEATHER}
 module climate;
-module tape;
+module tape{
+	csv_header_type NAME;
+}
 object climate {
         name weather;
 //        tmyfile "data/${WEATHER}";
