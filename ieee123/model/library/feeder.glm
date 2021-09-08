@@ -1117,7 +1117,7 @@ object pole
 #if POLE_TYPE==pole
 module tape;
 object multi_recorder {
-	property weather:wind_speed, pole1:status;
+	property pole1:wind_speed, pole1:status;
 	file "output/pole_data.csv";
 	interval -1;
 #ifdef STARTRECORDTIME
