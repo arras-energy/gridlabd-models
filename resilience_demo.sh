@@ -4,8 +4,8 @@
 #
 # Environment:
 #
-#   OPENFIDO_INPUT --> input folder when MDB files are placed
-#   OPENFIDO_OUTPUT --> output folder when CSV files are placed
+#   OPENFIDO_INPUT --> input folder when input files are placed
+#   OPENFIDO_OUTPUT --> output folder when output files are placed
 #
 
 VERSION=0
