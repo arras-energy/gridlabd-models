@@ -176,6 +176,7 @@ cd "$TMP"
 debug '* ' "TMP = ${TMP} (working folder)"
 
 # pipeline initialization
+DEFAULT_VARLIST=
 [ -f "${OPENFIDO_INIT}" ] && ( . ${OPENFIDO_INIT} || error $E_INTERNAL "${OPENFIDO_INIT} failed" )
 
 # display environment information
