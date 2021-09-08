@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# ICA Analysis
+# Resilience demonstration
 #
 # Environment:
 #
@@ -176,7 +176,8 @@ cd "$TMP"
 debug '* ' "TMP = ${TMP} (working folder)"
 
 # pipeline initialization
-[ -f "${OPENFIDO_INIT}" ] && . ${OPENFIDO_INIT} || error $E_INTERNAL "${OPENFIDO_INIT} failed"
+DEFAULT_VARLIST=
+[ -f "${OPENFIDO_INIT}" ] && ( . ${OPENFIDO_INIT} || error $E_INTERNAL "${OPENFIDO_INIT} failed" )
 
 # display environment information
 debug "Environment settings:"
@@ -203,4 +204,6 @@ debug "Input files:"
 [ "${OPENFIDO_DEBUG:-no}" = "yes" ] && ls -l ${OPENFIDO_INPUT} | sed '1,$s/^/* /'
 
 # perform the main run
-. ${OPENFIDO_RUN} || error $E_INTERNAL "${OPENFIDO_RUN} failed"
+#. ${OPENFIDO_RUN} || error $E_INTERNAL "${OPENFIDO_RUN} failed"
+gridlabd -W ${EXECPATH}/ieee123 model/ieee123.glm -o ${OPENFIDO_OUTPUT}/model.html -D html_save_options="--show --cluster"
+cp ${EXECPATH}/ieee123/data/pole_data.csv ${OUTPUT_OUTPUT}
