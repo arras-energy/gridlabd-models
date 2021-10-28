@@ -30,10 +30,6 @@
 //
 ///////////////////////////////////////////////////////
 
-#ifndef POLE_TYPE
-#error POLE_TYPE is not specified in ${CONFIGFILE}
-#endif
-
 #ifdef RANDOMSEED
 #set randomseed=${RANDOMSEED} // select deterministic simulation
 #endif // RANDOMSEED
@@ -91,8 +87,7 @@ object climate {
         interpolate QUADRATIC;
   	object player {
 		property wind_speed; 
-		file "test_wind.player";
-		
+		file data/${WEATHER};		
 	};
 }
 #else

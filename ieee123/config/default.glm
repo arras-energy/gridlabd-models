@@ -22,7 +22,7 @@
 #define MYSQL_MODEL=${MYSQL_MODEL:-off}
 #define MYSQL_GRAPH=${MYSQL_GRAPH:-off}
 
-#define POLE_TYPE=${POLE_TYPE:-node}
+//#define POLE_TYPE=${POLE_TYPE:-node}
 #define VOLTDUMP=${VOLTDUMP:-off}
 #define CURRDUMP=${CURRDUMP:-off}
 
