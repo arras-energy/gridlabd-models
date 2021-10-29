@@ -54,6 +54,11 @@ object meter {
 	latitude 35N23.224; 
 	longitude 119W0.031;
 	nominal_voltage 2401.7771;
+	object recorder {
+		property measured_real_power; 
+		interval -1; 
+		file "output/feeder_power.csv";
+	};
 }
 
 object node{

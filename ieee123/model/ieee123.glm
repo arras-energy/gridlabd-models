@@ -76,23 +76,19 @@ clock {
 // WEATHER
 //
 ///////////////////////////////////////////////////////
-#ifexist data/${WEATHER}
+#ifmissing ${WEATHER}
+#weather get ${WEATHER}
+#endif //if missing weather
 module climate;
 module tape{
 	csv_header_type NAME;
 }
 object climate {
         name weather;
-//        tmyfile "data/${WEATHER}";
+        tmyfile "${WEATHER}";
         interpolate QUADRATIC;
-  	object player {
-		property wind_speed; 
-		file data/${WEATHER};		
-	};
 }
-#else
-#error WEATHER is not specified in ${CONFIGFILE}
-#endif // exist WEATHER
+
 
 ///////////////////////////////////////////////////////
 //
