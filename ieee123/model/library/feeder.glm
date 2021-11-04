@@ -10,56 +10,31 @@
 
 //Pure nodes
 
-#if POLE_TYPE==pole
-object fault_check
-{
-    check_mode ONCHANGE;
-    output_filename "fault_check.txt";
-    reliability_mode TRUE;
-    grid_association true;
-}
-#endif //POLE_TYPE
-
-object ${POLE_TYPE:-node} {
+object node {
 	name node_3;
 	groupid nodevolts;
 	phases CN;
 	latitude 35N23.076; 
 	longitude 119W0.132;
 	nominal_voltage 2401.7771;
-#if POLE_TYPE==pole
-    configuration pole_default;
-    weather weather;
-#endif
 }
 
-
-
-object ${POLE_TYPE:-node} {
+object node {
 	name node_8;
 	groupid nodevolts;
     phases ABCN;
     nominal_voltage 2401.7771;
     latitude 35N23.117; 
     longitude 119W0.031;
-#if POLE_TYPE==pole
-	configuration pole_steel;
-    weather weather;
-#endif
 }
 
-
-object ${POLE_TYPE:-node} {
+object node {
 	name node_13;
 	groupid nodevolts;
     nominal_voltage 2401.7771;
     phases ABCN;
     latitude 35N23.117; 
     longitude 118W59.971; 
-#if POLE_TYPE==pole
-    configuration pole_default;
-    weather weather;
-#endif
 }
 
 object substation {
@@ -79,19 +54,20 @@ object meter {
 	latitude 35N23.224; 
 	longitude 119W0.031;
 	nominal_voltage 2401.7771;
+	object recorder {
+		property measured_real_power; 
+		interval -1; 
+		file "output/feeder_power.csv";
+	};
 }
 
-object ${POLE_TYPE:-node}{
+object node{
     name node_15;
     phases CN;
 	latitude 35N23.076; 
 	longitude 118W59.971;
 	groupid nodevolts;
     nominal_voltage 2401.7771;
-#if POLE_TYPE==pole
-    configuration pole_default;
-    weather weather;
-#endif
 }
 
 object node {
@@ -101,30 +77,22 @@ object node {
 	nominal_voltage 2401.7771;
 }
 
-object ${POLE_TYPE:-node} {
+object node {
 	name node_21;
 	groupid nodevolts;
 	phases ABCN;
 	latitude 35N23.302; 
 	longitude 118W59.971;
 	nominal_voltage 2401.7771;
-#if POLE_TYPE==pole
-	configuration pole_steel;
-	weather weather;
-#endif
 }
 
-object ${POLE_TYPE:-node} {
+object node {
 	name node_23;
 	groupid nodevolts;
 	phases ABCN;
 	latitude 35N23.343; 
 	longitude 118W59.971;
 	nominal_voltage 2401.7771;
-#if POLE_TYPE==pole
-	configuration pole_default;
-	weather weather;
-#endif
 }
 
 object node {
@@ -281,17 +249,13 @@ object node {
 	nominal_voltage 2401.7771;
 }
 
-object ${POLE_TYPE:-node} {
+object node {
 	name node_149;
 	groupid nodevolts;
 	phases ABCN;
 	latitude 35N23.409; 
 	longitude 118W59.643;
 	nominal_voltage 2401.7771;
-#if POLE_TYPE==pole
-	configuration pole_default;
-    weather weather;
-#endif
 }
 
 object node {
@@ -361,17 +325,13 @@ object node {
 	nominal_voltage 2401.7771;
 }
 
-object ${POLE_TYPE:-node}{
+object node{
 	name node_901;
 	groupid nodevolts;
 	phases AN;
 	latitude 35N23.388; 
 	longitude 118W59.971;
 	nominal_voltage 2401.7771;
-#if POLE_TYPE==pole
-	configuration pole_steel;
-	weather weather;
-#endif
 }
 
 object node {
@@ -388,17 +348,13 @@ object node {
 	nominal_voltage 2401.7771;
 }
 
-object ${POLE_TYPE:-node} {
+object node{
 	name node_15001;
 	groupid nodevolts;
 	phases ABCN;
 	latitude 35N23.141; 
 	longitude 118W59.679;
 	nominal_voltage 2401.7771;
-#if POLE_TYPE==pole
-    configuration pole_default;
-    weather weather;
-#endif
 }
 
 object node {
@@ -1116,6 +1072,7 @@ object overhead_line {
 	length 175.00;
 	configuration lc310;
 }
+
 
 object overhead_line {
 	name line1to3;
