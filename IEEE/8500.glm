@@ -1,15 +1,16 @@
-//IEEE 8500 node test system.
-//  Alyona Ivanova (SLAC) Oct 29, 2018
+// IEEE 8500 model
+
+#set strictnames=FALSE
+
 module powerflow 
 {
     solver_method NR;
     line_limits FALSE;
     default_maximum_voltage_error 1e-4;
-};
-
-#set strictnames=FALSE
+}
 
 // Feeder
+
 object regulator {
      name "FEEDER_REG";
      phases ABCN;
