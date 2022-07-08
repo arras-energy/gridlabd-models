@@ -25858,13 +25858,13 @@ object node {
 
 object node {
      phases ABCN;
+     bustype SWING;
      name "node_regxfmr_HVMV_Sub_LSB";
      nominal_voltage 7199.558;
 }
 
 object substation { 
      name "node_HVMV_Sub_HSB";   
-     bustype SWING;
      base_power 100 MVA;
      reference_phase PHASE_A;
      phases ABCN;
@@ -88237,7 +88237,7 @@ object triplex_node {
 object regulator_configuration {
      connect_type 1;
      name reg_config_1;
-     Control OUTPUT_VOLTAGE;
+     Control MANUAL;
      band_center 7410.0;
      band_width 120.0;
      time_delay 60.0;
@@ -88253,7 +88253,7 @@ object regulator_configuration {
 object regulator_configuration {
      connect_type 1;
      name reg_config_2;
-     Control OUTPUT_VOLTAGE;
+     Control MANUAL;
      band_center 7320.0;
      band_width 120.0;
      time_delay 120.0;
@@ -88269,7 +88269,7 @@ object regulator_configuration {
 object regulator_configuration {
      connect_type 1;
      name reg_config_3;
-     Control OUTPUT_VOLTAGE;
+     Control MANUAL;
      band_center 7320.0;
      band_width 120.0;
      time_delay 120.0;
@@ -88285,7 +88285,7 @@ object regulator_configuration {
 object regulator_configuration {
      connect_type 1;
      name reg_config_4;
-     Control OUTPUT_VOLTAGE;
+     Control MANUAL;
      band_center 7380.0;
      band_width 120.0;
      time_delay 90.0;

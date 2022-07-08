@@ -1,0 +1,1 @@
+#output "${modelname/glm/png}" -t profile -l 5
