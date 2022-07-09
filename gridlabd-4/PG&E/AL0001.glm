@@ -1,4 +1,4 @@
-// PG&E AL0001 feeder model
+// PG&E AL0001 Taxonomy Feeder Model
 
 module powerflow
 {
