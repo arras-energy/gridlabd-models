@@ -5,6 +5,4 @@
 *.json
 *.csv
 *.html
-
-ieee123/config/local.glm
-ieee123/gridlabd.json
+*.png
