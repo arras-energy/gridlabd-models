@@ -1,18 +1,15 @@
 // PG&E AT0001 Taxonomy Feeder Model
-//********************************
-// A demonstration of cyme xml to Gridlab-D input
-// created by: Vaibhav Donde
-//
 
 module powerflow
 {
 	solver_method NR;
 	default_maximum_voltage_error 1e-4;
-};
+}
 
 //*********************************************
 // Conductor Objects
 //*********************************************
+
 // OHCond_2_CU_I
 object overhead_line_conductor {
 	name OHCond_2_CU_I;
