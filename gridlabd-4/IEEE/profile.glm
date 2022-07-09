@@ -1,1 +1,9 @@
-#output "${modelname/glm/png}" -t profile -l 5
+// Enable output of voltage profile
+//
+// Add this to the command line to generate PNG voltage profile graph after solving the network.
+//
+// Example:
+//
+//   % gridlabd MODEL.glm profile.glm
+//
+#output "${modelname/glm/png}" -t profile
