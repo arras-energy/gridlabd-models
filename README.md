@@ -1,3 +1,5 @@
+[![validate](https://github.com/slacgismo/gridlabd-models/actions/workflows/validate.yml/badge.svg)](https://github.com/slacgismo/gridlabd-models/actions/workflows/validate.yml)
+
 GridLAB-D Reference Models
 --------------------------
 
