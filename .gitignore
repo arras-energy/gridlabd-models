@@ -5,3 +5,5 @@
 *.json
 *.html
 *.png
+.tmp*
+autotest-results.tarz

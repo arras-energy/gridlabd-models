@@ -1,0 +1,39 @@
+#!/bin/bash
+
+ROOT=$PWD
+
+function cleanup
+{
+	(cd $TMP; tar cfz $ROOT/autotest-results.tarz .)
+	rm -f $TMP/*
+	rmdir $TMP
+}
+
+trap cleanup EXIT
+
+TMP=$ROOT/.tmp$$
+mkdir -p $TMP
+
+TESTED=0
+PASSED=0
+FAILED=0
+
+for GROUP in $(find gridlabd-4/* -type d); do
+	echo "Processing $GROUP..."
+	for MODEL in $GROUP/*.glm; do
+		NAME=$(basename $MODEL)
+		echo -n "Testing $NAME..."
+		if gridlabd -W $TMP $PWD/$MODEL 1>$TMP/${NAME/.glm/.out} 2>$TMP/${NAME/.glm/.err}; then
+			echo "OK"
+			PASSED=$(($PASSED+1))
+		else
+			echo "FAILED"
+			FAILED=$((FAILED+1))
+		fi
+		TESTED=$(($TESTED+1))
+	done
+done
+echo "$PASSED passed"
+echo "$FAILED failed"
+echo "$TESTED done"
+echo "$((100*$PASSED/$TESTED)) success"
