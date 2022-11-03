@@ -36,4 +36,4 @@ done
 echo "$PASSED passed"
 echo "$FAILED failed"
 echo "$TESTED done"
-echo "$((100*$PASSED/$TESTED)) success"
+echo "$((100*$PASSED/$TESTED))% success"
