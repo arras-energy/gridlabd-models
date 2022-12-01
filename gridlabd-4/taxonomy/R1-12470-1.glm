@@ -1481,7 +1481,6 @@ object load:651
 	constant_power_C 66446.0143+25680.8384j;
 	nominal_voltage 7216.88;
 	load_class C;
-	DER_value 10 kW;
 }
 
 object load:652
